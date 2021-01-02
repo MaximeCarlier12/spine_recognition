@@ -1,0 +1,15 @@
+CONSIGNES :
+- Bien mettre à jour le github régulièrement quand on bosse
+- tenir informé les autres via le groupe messenger
+- réfléchir au contenu du rendu vidéo
+
+1- amélioration du contraste des images, déjà en cours : JIRI, DIM
+2- tester différents filtres sur les images : 
+	- domaine spatial : MAX, YANN
+	- domaine fréquentiel : LUKA
+- retenir la meilleure combinaison contraste - filtre via un critère de sélection (le critère retenu semble être le visuel). L'appliquer à l'ensemble des images qui constituent notre jeu de données. TOUS	
+3- détecter automatiquement la partie haute et la partie basse de la colonne de chaque image : YANN, JIRI, MAX
+4- détecter les points clés de la colonne (tester algorithme SIFT et d'autres). Visualiser ces points clés : DIM, YANN
+5- trouver la fonction polynomiale qui interpole les points détéctés dans l'étape précédente : MAX, LUKA
+6- faire une analyse stat de la fonction trouvée en utilisant les erreurs les moins carrées. Interpréter les résultats. JIRI, DIM
+7 - tester la transformation de Hough pour trouver la colonne et comparer les résultats avec le point 6. LUKA, YANN
