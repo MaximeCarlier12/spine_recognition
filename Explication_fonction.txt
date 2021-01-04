@@ -1,0 +1,9 @@
+SIFT.IPYNB -> Scrypte jupyter pour SIFT python
+test.m -> Tester différent paramètre de l'équaliseur
+SIFT_feature.m -> Un des Algo SIFT trouvé Matlab
+key_points.m -> Un autre algo SIFT trouvé Matlab 
+test_key_points.m -> Script pour compiler key_points.m
+SiftMain.m -> Un autre algo SIFT trouvé Matlab dans le dossier SIFT_V1
+test_VL_SIFT.m -> Un autre algo SIFT trouvé Matlab utilisant le dossier vlfeat-0.9.21
+data -> Les images
+
