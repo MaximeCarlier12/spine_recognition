@@ -1,2 +1,2 @@
-I=imread('constrasted_image2.png');
+I=imread('contrasted_image.png');
 exterma = key_points(I);
