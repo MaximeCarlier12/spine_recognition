@@ -36,7 +36,38 @@ J3B = imcrop(J3B, [0 x1+1 n x2-x1]);
 J3C = imcrop(J3C, [0 x2+1 n m-x2]);
 J = cat(1,J3A,J3B,J3C);
 %imshowpair(I2,J,'montage');
-imshow(J)
+%imshow(J)
+
+%% Detection of the boudaries of the spine (begin, end)
+I_low = J3C;
+[m,n] = size(I_low);
+% On cherche la colonne la plus à gauche qui contient des pixels blancs
+low_j = 2000;
+low_i = 2000;
+for j = n:-1:1
+    numBlackPixels = sum(I_low(:, j) < 20)
+    if numBlackPixels < m*7/10
+        low_j = j
+        break;
+    end
+end
+% On cherche la ligne où sur la colonne trouvée ci-dessus, 1/3 des pixels
+% blancs sont en dessous de cette ligne.
+count = 0;
+for i = m:-1:1
+    if I_low(i, low_j) > 20
+        count = count +1;
+    end
+    if count > sum(I_low(:,low_j)>20)*1/3 % ou 1/4
+        low_i = i
+        break;
+    end
+end
+I_low(low_i-3:low_i+3,:) = 255;
+I_low(:,low_j-3:low_j+3) = 255;
+imshowpair(J3C,I_low,'montage')
+
+%% Cont
 
 %cont(I2);
 
