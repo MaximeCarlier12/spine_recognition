@@ -1,4 +1,30 @@
-I = imread('data/2012-06- 22.jpg');
+Img = imread('data/2012-06- 22.jpg');
+%contrast_image(Img);
+
+files = dir(fullfile('data','*.jpg'));
+
+for i = 1:1:31
+    files(i).name
+    Img = imread(files(i).name);
+    J = contrast_image(Img);
+    imwrite(J,files(i).name);
+end
+
+%cont(I2);
+
+function cont(image)
+    figure;
+    subplot(1,5,1);imshow(image);title("Image initiale");
+    for i = 1:1:3
+        I = imadjust(image, [0.32 i/3.1]);
+        subplot(1,4,i+1);imshow(I);title(["Image modifié : Sup = ", i/3.1] );
+    end
+   
+end
+
+function J = contrast_image(image)
+
+I = image;
 I2 = rgb2gray(I);
 J1 = adapthisteq(I2);
 J2 = histeq(I2);
@@ -35,17 +61,7 @@ J3A = imcrop(J3A, [0 0 n x1]);
 J3B = imcrop(J3B, [0 x1+1 n x2-x1]);
 J3C = imcrop(J3C, [0 x2+1 n m-x2]);
 J = cat(1,J3A,J3B,J3C);
-%imshowpair(I2,J,'montage');
-imshow(J)
+imshowpair(I2,J,'montage');
+%imshow(J)
 
-%cont(I2);
-
-function cont(image)
-    figure;
-    subplot(1,5,1);imshow(image);title("Image initiale");
-    for i = 1:1:3
-        I = imadjust(image, [0.32 i/3.1]);
-        subplot(1,4,i+1);imshow(I);title(["Image modifié : Sup = ", i/3.1] );
-    end
-   
 end
