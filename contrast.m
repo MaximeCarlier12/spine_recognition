@@ -22,6 +22,18 @@ writetable(T, 'separation_coordinates.txt');
 T = table(M_end_spine, 'VariableNames', { 'end_x', 'end_y'} );
 writetable(T, 'end_spine_coordinates.txt');
 
+%% Detection of the boudaries of the spine = beginning
+num_image = 9;
+im_path = ['img_contrast/2012-06-', ' ', int2str(num_image), '.jpg'];
+coord_table = readtable('separation_coordinates.txt');
+coordinates = table2array(coord_table);
+I = imread(im_path);
+[m,n] = size(I);
+I_begin = imcrop(I, [0 0 n m-coordinates(num_image,1)]);
+[m,n] = size(I_begin);
+low_j = 2000;
+low_i = 2000;
+imshow(edge(I_begin, 'Sobel', 0.07)); title('Sobel');
 
 %% Pour une seule image
 I = imread('data/2012-06- 22.jpg');
