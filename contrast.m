@@ -2,9 +2,11 @@
 %contrast_image(Img);
 
 %% Création des images contrastées
+
 files = dir(fullfile('data','*.jpg'));
 M_separation = zeros(30,2);
 M_end_spine = zeros(30,2);
+
 for i = 1:1:30
     path_in = strcat('data/', files(i).name);
     Img = imread(path_in);
@@ -17,9 +19,10 @@ for i = 1:1:30
     M_end_spine(i,2) = end_y;
     imwrite(J,path_out);
 end
-T = table(M_separation, 'VariableNames', { 'x_sup', 'x_low'} );
+
+T = table(M_separation(:,1), M_separation(:,2), 'VariableNames', { 'x_sup', 'x_low'} );
 writetable(T, 'separation_coordinates.txt');
-T = table(M_end_spine, 'VariableNames', { 'end_x', 'end_y'} );
+T = table(M_end_spine(:,1), M_end_spine(:,2), 'VariableNames', { 'end_x', 'end_y'} );
 writetable(T, 'end_spine_coordinates.txt');
 
 %% Detection of the boudaries of the spine = beginning
@@ -36,6 +39,7 @@ low_i = 2000;
 imshow(edge(I_begin, 'Sobel', 0.07)); title('Sobel');
 
 %% Pour une seule image
+
 I = imread('data/2012-06- 22.jpg');
 I2 = rgb2gray(I);
 J1 = adapthisteq(I2);
@@ -113,6 +117,7 @@ imshow(I_low)
 %imshowpair(I,I_low,'montage')
 end
 
+%Comparison of different saturation thresholds
 function cont(image)
     figure;
     subplot(1,5,1);imshow(image);title("Image initiale");
@@ -123,6 +128,7 @@ function cont(image)
    
 end
 
+% Contrast the image with the linear transformation and saturation
 function [J, x1, x2] = contrast_image(image)
 
 I = image;
