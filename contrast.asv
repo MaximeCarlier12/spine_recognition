@@ -2,7 +2,7 @@
 %contrast_image(Img);
 
 %% Création des images contrastées
-clear;
+
 files = dir(fullfile('data','*.jpg'));
 M_separation = zeros(30,2);
 M_end_spine = zeros(30,2);
@@ -11,7 +11,7 @@ M_beg_spine = zeros(30,2);
 for i = 1:1:30
     path_in = strcat('data/', files(i).name);
     Img = imread(path_in);
-    [J, x_sup, x_low] = contrast_image(Img);
+    [J, x_sup, x_low] = contrast_image_func(Img);
     M_separation(i, 1) = x_sup;
     M_separation(i,2) = x_low;
     path_out = strcat('img_contrast/', files(i).name);

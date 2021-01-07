@@ -1,17 +1,15 @@
 
 list_im = dir('data/*.jpg');
 
-%contrast_image(list_im);
-
-
-image1 = rgb2gray(imread('data/test.jpg'));
-image2 = rgb2gray(imread('data/2012-06- 4.jpg'));
+image1 = (imread('data/test.jpg'));
+image2 = (imread('data/2012-06- 6.jpg'));
 %test_cliplimit(image1);
 %test_distribution(image2);
 
+contrast_image(image2);
 
 
-function contrast_image(list_im)
+function cont_image(list_im)
 
     for i = 1:length(list_im)
         figure;
