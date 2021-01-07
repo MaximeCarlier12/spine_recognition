@@ -1,17 +1,29 @@
-Img = imread('data/2012-06- 22.jpg');
+%Img = imread('data/2012-06- 22.jpg');
 %contrast_image(Img);
 
+%% Création des images contrastées
 files = dir(fullfile('data','*.jpg'));
-
-for i = 1:1:31
-    files(i).name
-    Img = imread(files(i).name);
-    J = contrast_image(Img);
-    imwrite(J,files(i).name);
+M_separation = zeros(30,2);
+M_end_spine = zeros(30,2);
+for i = 1:1:30
+    path_in = strcat('data/', files(i).name);
+    Img = imread(path_in);
+    [J, x_sup, x_low] = contrast_image(Img);
+    M_separation(i, 1) = x_sup;
+    M_separation(i,2) = x_low;
+    path_out = strcat('img_contrast/', files(i).name);
+    [J3, end_x, end_y] = end_boundary(i);
+    M_end_spine(i,1) = end_x;
+    M_end_spine(i,2) = end_y;
+    imwrite(J,path_out);
 end
+T = table(M_separation, 'VariableNames', { 'x_sup', 'x_low'} );
+writetable(T, 'separation_coordinates.txt');
+T = table(M_end_spine, 'VariableNames', { 'end_x', 'end_y'} );
+writetable(T, 'end_spine_coordinates.txt');
 
-%cont(I2);
 
+%% Pour une seule image
 I = imread('data/2012-06- 22.jpg');
 I2 = rgb2gray(I);
 J1 = adapthisteq(I2);
@@ -50,8 +62,16 @@ J3B = imcrop(J3B, [0 x1+1 n x2-x1]);
 J3C = imcrop(J3C, [0 x2+1 n m-x2]);
 J = cat(1,J3A,J3B,J3C);
 
-%% Detection of the boudaries of the spine (begin, end)
-I_low = J3C;
+%% Functions used
+
+% Detection of the boudaries of the spine = end
+function [I_low, low_i, low_j] = end_boundary(num_image)
+coord_table = readtable('separation_coordinates.txt');
+coordinates = table2array(coord_table);
+im_path = ['img_contrast/2012-06-', ' ', int2str(num_image), '.jpg'];
+I = imread(im_path);
+[m,n] = size(I);
+I_low = imcrop(I, [0 coordinates(num_image,2)+1 n m-coordinates(num_image,2)]);
 [m,n] = size(I_low);
 % On cherche la colonne la plus à gauche qui contient des pixels blancs
 low_j = 2000;
@@ -77,7 +97,9 @@ for i = m:-1:1
 end
 I_low(low_i-3:low_i+3,:) = 255;
 I_low(:,low_j-3:low_j+3) = 255;
-imshowpair(J3C,I_low,'montage')
+imshow(I_low)
+%imshowpair(I,I_low,'montage')
+end
 
 function cont(image)
     figure;
@@ -89,7 +111,7 @@ function cont(image)
    
 end
 
-function J = contrast_image(image)
+function [J, x1, x2] = contrast_image(image)
 
 I = image;
 I2 = rgb2gray(I);
