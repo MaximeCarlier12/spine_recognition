@@ -4,38 +4,38 @@
 %% Création des images contrastées
 
 files = dir(fullfile('data','*.jpg'));
-M_separation = zeros(30,2);
-M_end_spine = zeros(30,2);
-M_beg_spine = zeros(30,2);
+%M_separation = zeros(30,2);
+%M_end_spine = zeros(30,2);
+%M_beg_spine = zeros(30,2);
 
 for i = 1:1:30
     path_in = strcat('data/', files(i).name);
     Img = imread(path_in);
-    [J, x_sup, x_low] = contrast_image(Img);
-    M_separation(i, 1) = x_sup;
-    M_separation(i,2) = x_low;
-    path_out = strcat('img_contrast/', files(i).name);
-    imwrite(J,path_out);
-end
-T = table(M_separation(:,1), M_separation(:,2), 'VariableNames', { 'x_sup', 'x_low'} );
-writetable(T, 'separation_coordinates.txt');
-for i=1:30
-    [J3, end_x, end_y] = end_boundary(i);
-    M_end_spine(i,1) = end_x;
-    M_end_spine(i,2) = end_y;
+    [J, line_sup, line_inf] = contrast_image(Img);
+    %M_separation(i,1) = line_sup;
+    %M_separation(i,2) = line_inf;
+    path_contr = strcat('img_contrast/', files(i).name);
+    imwrite(J,path_contr);
+
+%T = table(M_separation(:,1), M_separation(:,2), 'VariableNames', { 'lines_sup', 'lines_low'} );
+%writetable(T, 'separation_coordinates.txt');
+    Img = imread(path_contr);
+    [J3, end_line, end_col] = end_boundary(Img, line_inf);
+    %M_end_spine(i,1) = end_line;
+    %M_end_spine(i,2) = end_col;
     path_out_end = strcat('img_end/', files(i).name);
     imwrite(J3,path_out_end);
     
-    [J1, beg_x, beg_y] = beginning_boundary(i);
-    M_beg_spine(i,1) = beg_x;
-    M_beg_spine(i,2) = beg_y;
+    [J1, beg_line, beg_col] = beginning_boundary(Img, line_sup);
+    %M_beg_spine(i,1) = beg_line;
+    %M_beg_spine(i,2) = beg_col;
     path_out_begin = strcat('img_begin/', files(i).name);
     imwrite(J1,path_out_begin);
 end
-T = table(M_end_spine(:,1), M_end_spine(:,2), 'VariableNames', { 'end_x', 'end_y'} );
-writetable(T, 'end_spine_coordinates.txt');
-T = table(M_beg_spine(:,1), M_beg_spine(:,2), 'VariableNames', { 'beg_x', 'beg_y'} );
-writetable(T, 'begin_spine_coordinates.txt');
+%T = table(M_end_spine(:,1), M_end_spine(:,2), 'VariableNames', { 'end_lines', 'end_columns'} );
+%writetable(T, 'end_spine_coordinates.txt');
+%T = table(M_beg_spine(:,1), M_beg_spine(:,2), 'VariableNames', { 'beg_lines', 'beg_columns'} );
+%writetable(T, 'begin_spine_coordinates.txt');
 
 %% Functions used
 
@@ -44,18 +44,18 @@ writetable(T, 'begin_spine_coordinates.txt');
 % placée. Les quelques images qui ne marchent pas bien car les dents
 % blanches perturbent la bonne détection.
 
-function[J1, beg_i, beg_j] = beginning_boundary(num_image)
-im_path = ['img_contrast/2012-06-', ' ', int2str(num_image), '.jpg'];
-coord_table = readtable('separation_coordinates.txt');
-coordinates = table2array(coord_table);
-I = imread(im_path);
+function[J1, beg_line, beg_column] = beginning_boundary(image, line_crop)
+%coord_table = readtable('separation_coordinates.txt');
+%coordinates = table2array(coord_table);
+%im_path = ['img_contrast/2012-06-', ' ', int2str(num_image), '.jpg'];
+I = image;
 [m,n] = size(I);
-I_begin = imcrop(I, [0 0 n coordinates(num_image,1)]);
+I_begin = imcrop(I, [0 0 n line_crop]);
 [m,n] = size(I_begin);
-beg_i = 1;
-beg_j = 1;
-[T,EM] = graythresh(I_begin);
-figure(1); imshow(I_begin)
+beg_line = 1;
+beg_column = 1;
+%[T,EM] = graythresh(I_begin);
+%figure(1); imshow(I_begin)
 
 skull_detect = false;
 % detecter la ligne horizontale du haut de la colonne
@@ -65,27 +65,26 @@ for i = 1:m
         skull_detect = true;
     end
     if (skull_detect == true) && (numBlackPixels > n*8/10)
-        beg_i = i
+        beg_line = i
         break;
     end
 end
 
 %detecter la ligne verticale du haut de la colonne
 min_black = m;
-beg_j = 0;
+beg_column = 0;
 for j = 1:n
     numBlackPixels = sum(I_begin(:,j) < 3);
     if numBlackPixels < min_black
         min_black = numBlackPixels;
-        beg_j = j;
+        beg_column = j;
     end
 end
-beg_j
-I_begin(beg_i-3:beg_i+3,:) = 120;
-I_begin(:,beg_j-3:beg_j+3) = 120;
+beg_column
+I_begin(beg_line-3:beg_line+3,:) = 120;
+I_begin(:,beg_column-3:beg_column+3) = 120;
 J1 = I_begin;
-figure(3)
-imshow(I_begin)
+figure(3); imshow(J1) % afficher l'image avec le point de fin de la colonne
 
 % subplot(2,2,1); imshow(edge(I_begin, 'Canny', [0.01 0.6], 3)); title('Canny');
 % subplot(2,2,2); imshow(edge(I_begin, 'Canny', [0.02 0.5], 2)); title('Sobel');
@@ -101,13 +100,13 @@ imshow(I_begin)
 end
 
 %% Detection of the boudaries of the spine = end
-function [I_low, end_i, end_j] = end_boundary(num_image)
-coord_table = readtable('separation_coordinates.txt');
-coordinates = table2array(coord_table);
-im_path = ['img_contrast/2012-06-', ' ', int2str(num_image), '.jpg'];
-I = imread(im_path);
+function [I_low, end_line, end_column] = end_boundary(image, line_crop)
+%coord_table = readtable('separation_coordinates.txt');
+%coordinates = table2array(coord_table);
+%im_path = ['img_contrast/2012-06-', ' ', int2str(num_image), '.jpg'];
+I = image;
 [m,n] = size(I);
-I_low = imcrop(I, [0 coordinates(num_image,2)+1 n m-coordinates(num_image,2)]);
+I_low = imcrop(I, [0 line_crop+1 n m-line_crop]);
 [m,n] = size(I_low);
 % On cherche la colonne la plus à gauche qui contient des pixels blancs
 low_j = 2000;
@@ -133,9 +132,9 @@ for i = m:-1:1
 end
 I_low(low_i-3:low_i+3,:) = 255;
 I_low(:,low_j-3:low_j+3) = 255;
-end_i = low_i + coordinates(num_image,2);
-end_j = low_j;
-%imshow(I_low)
+end_line = low_i + line_crop;
+end_column = low_j;
+imshow(I_low) % afficher l'image avec le point de fin de la colonne
 %imshowpair(I,I_low,'montage')
 end
 
