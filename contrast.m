@@ -6,9 +6,11 @@ J2 = histeq(I2);
 %J3 = imadjust(I2, [0.33 0.58]); %body values
 J3 = imadjust(I2, [0.5 0.58]); %detection values
 figure;
+imshow(J3);
+figure;
 imshowpair(I2,J3,'montage');
 title('Original Image (left) and Contrast Enhanced Image (right)');
-%imshow(J2);
+imshow(J2);
 
 %test_cliplimit(I2);
 
