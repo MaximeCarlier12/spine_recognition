@@ -2,7 +2,7 @@
 %contrast_image(Img);
 
 %% Création des images contrastées
-
+clear;
 files = dir(fullfile('data','*.jpg'));
 %M_separation = zeros(30,2);
 %M_end_spine = zeros(30,2);
@@ -23,6 +23,7 @@ for i = 1:1:30
     [J3, end_line, end_col] = end_boundary(Img, line_inf);
     %M_end_spine(i,1) = end_line;
     %M_end_spine(i,2) = end_col;
+
     path_out_end = strcat('img_end/', files(i).name);
     imwrite(J3,path_out_end);
     
@@ -150,7 +151,7 @@ function cont(image)
 end
 
 %% Contrast the image with the linear transformation and saturation
-function [J, x1, x2] = contrast_image(image)
+function [J, x1, x2] = contrast_image_func(image)
 
 I = image;
 I2 = rgb2gray(I);
