@@ -4,39 +4,45 @@
 %% Création des images contrastées
 clear;
 files = dir(fullfile('data','*.jpg'));
-%M_separation = zeros(30,2);
-%M_end_spine = zeros(30,2);
-%M_beg_spine = zeros(30,2);
+M_separation = zeros(30,2);
+M_end_spine = zeros(30,2);
+M_beg_spine = zeros(30,2);
 
 for i = 1:1:30
     path_in = strcat('data/', files(i).name);
     Img = imread(path_in);
     [J, line_sup, line_inf] = contrast_image(Img);
-    %M_separation(i,1) = line_sup;
-    %M_separation(i,2) = line_inf;
+    M_separation(i,1) = line_sup;
+    M_separation(i,2) = line_inf;
     path_contr = strcat('img_contrast/', files(i).name);
     imwrite(J,path_contr);
+end
+T = table(M_separation(:,1), M_separation(:,2), 'VariableNames', { 'lines_sup', 'lines_inf'} );
+writetable(T, 'separation_coordinates.txt');
 
-%T = table(M_separation(:,1), M_separation(:,2), 'VariableNames', { 'lines_sup', 'lines_low'} );
-%writetable(T, 'separation_coordinates.txt');
+coord_table = readtable('separation_coordinates.txt');
+coordinates = table2array(coord_table);
+for i = 1:1:30
+    path_contr = strcat('img_contrast/', files(i).name);
     Img = imread(path_contr);
+    line_inf = coordinates(i, 2);
     [J3, end_line, end_col] = end_boundary(Img, line_inf);
-    %M_end_spine(i,1) = end_line;
-    %M_end_spine(i,2) = end_col;
+    M_end_spine(i,1) = end_line;
+    M_end_spine(i,2) = end_col;
 
     path_out_end = strcat('img_end/', files(i).name);
     imwrite(J3,path_out_end);
     
     [J1, beg_line, beg_col] = beginning_boundary(Img, line_sup);
-    %M_beg_spine(i,1) = beg_line;
-    %M_beg_spine(i,2) = beg_col;
+    M_beg_spine(i,1) = beg_line;
+    M_beg_spine(i,2) = beg_col;
     path_out_begin = strcat('img_begin/', files(i).name);
     imwrite(J1,path_out_begin);
 end
-%T = table(M_end_spine(:,1), M_end_spine(:,2), 'VariableNames', { 'end_lines', 'end_columns'} );
-%writetable(T, 'end_spine_coordinates.txt');
-%T = table(M_beg_spine(:,1), M_beg_spine(:,2), 'VariableNames', { 'beg_lines', 'beg_columns'} );
-%writetable(T, 'begin_spine_coordinates.txt');
+T = table(M_end_spine(:,1), M_end_spine(:,2), 'VariableNames', { 'end_lines', 'end_columns'} );
+writetable(T, 'end_spine_coordinates.txt');
+T = table(M_beg_spine(:,1), M_beg_spine(:,2), 'VariableNames', { 'beg_lines', 'beg_columns'} );
+writetable(T, 'begin_spine_coordinates.txt');
 
 %% Functions used
 
