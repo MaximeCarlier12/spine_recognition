@@ -12,7 +12,7 @@ function exterma= key_points(I)
 %I=imread('Image');
 %I=double(rgb2gray(I));
 I=I/max(max(I));  % image should be in [0 1]
-[M,N] = size(I) ;
+[M,N,C] = size(I) ;
 
 % Lowe's choices
 S=3 ;

@@ -6,8 +6,8 @@ I2 = rgb2gray(I);
 J1 = adapthisteq(I2);
 J2 = histeq(I2);
 J3A = imadjust(I2, [0.22 0.41]); %neck values
-J3B = imadjust(I2, [0.42 0.58]); %body values
-J3C = imadjust(I2, [0.50 0.78]); %pelvis values 0.47 0.88
+J3B = imadjust(I2, [0.42 0.70]); %body values 0.42 0.58
+J3C = imadjust(I2, [0.50 0.73]); %pelvis values 0.47 0.88
 D1 = imadjust(I2, [0.5 0.58]); %detection values 1
 D2 = imadjust(I2, [0.79 0.99]); %detection values 2
 %figure;
@@ -48,13 +48,13 @@ for i = x1:1:m
         x2 = i;
     end
 end
-x2 = x2 + 300 
+x2 = x2 + 500 
 
 J3A = imcrop(J3A, [0 0 n x1]);
 J3B = imcrop(J3B, [0 x1+1 n x2-x1]);
 J3C = imcrop(J3C, [0 x2+1 n m-x2]);
 J = cat(1,J3A,J3B,J3C);
-%figure;
-%imshowpair(I2,J,'montage');
+figure;
+imshowpair(I2,J,'montage');
 %imshow(J)
 end
