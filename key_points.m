@@ -22,7 +22,7 @@ O=floor(log2(min(M,N)))-omin-4 ; % Up to 16x16 images
 sigma0=1.6*2^(1/S) ; % this sigma is for the image in real size
 % and 1.6 is for doublsized image in first octave
 sigman=0.5 ;% antialiasing filter sigma
-thresh = 0.006;% it was .03 in Lowe's paper ,we changed it to .006 here
+thresh = 0.03;% it was .03 in Lowe's paper ,we changed it to .006 here
 r = 10 ;
 
 
@@ -74,6 +74,7 @@ for o=1:GS.O
     
 end
 
+figure;
 imshow(I,[])
 hold on
 plot(exterma(2,:),exterma(1,:),'r+','LineWidth',2)
