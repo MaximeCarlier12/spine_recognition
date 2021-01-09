@@ -1,4 +1,4 @@
-I=imread('img_contrast/2012-06- 1.jpg');
+I=imread('data_difficult/2012-06- 2.jpg');
 exterma = key_points(I);
 
 %% loadind data
