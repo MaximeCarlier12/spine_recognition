@@ -20,7 +20,7 @@ for i = 1:1:30
 end
 T = table(M_separation(:,1), M_separation(:,2), 'VariableNames', { 'lines_sup', 'lines_inf'} );
 writetable(T, 'separation_coordinates.txt');
-
+%%
 coord_table = readtable('separation_coordinates.txt');
 coordinates = table2array(coord_table);
 for i = 1:1:30
