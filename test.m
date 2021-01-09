@@ -1,4 +1,4 @@
-
+%% Test script for contrast optimisation
 list_im = dir('data/*.jpg');
 
 image1 = (imread('data/test.jpg'));
@@ -8,9 +8,7 @@ image2 = (imread('data/2012-06- 6.jpg'));
 
 contrast_image(image2);
 
-
 function cont_image(list_im)
-
     for i = 1:length(list_im)
         figure;
         images_namei = list_im(i).name;
@@ -33,8 +31,6 @@ function test_cliplimit(image)
 end
 
 function test_distribution(image)
-
-    
     figure;
     subplot(1,4,1);imshow(image);title("Image initiale");
     I = adapthisteq(image,'Distribution','uniform');

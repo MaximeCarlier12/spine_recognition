@@ -4,7 +4,8 @@ begin_spine = importdata('begin_spine_coordinates.txt', ',', 1);
 end_spine = importdata('end_spine_coordinates.txt', ',', 1);
 
 %% Harris selection points from right side
-for i = 3:3
+errors = 0;
+for i = 1:30
     num_image = i;
     I = imread(strcat('img_contrast/', files(num_image).name));
     [M N] = size(I);
@@ -64,32 +65,33 @@ for i = 3:3
     size(interesting_points)
     % polyfit
     if m_int > 800
-        degree = round(m_int/100);
+        degree = min(8,round(m_int/100));
     else
-        degree = round(m_int/70);
+        degree = max(4, round(m_int/70));
     end
-    p = polyfit(interesting_points(:,2),interesting_points(:,1), degree);
+    
     x1 = interesting_points(:,2);
     %x1 = linspace(begin_spine.data(num_image,1), end_spine.data(num_image,1));
+    
+    p = polyfit(interesting_points(:,2),interesting_points(:,1), degree);
     y1 = polyval(p,x1);
-    plot(y1,x1) % afficher courbe.
-    hold off;
     LSE = 0;
+    fitpoints = [y1 x1];
     for point = 1:number_points
-        LSE = LSE + norm(interesting_points(point,:),y1(point));
+        LSE = LSE + norm(interesting_points(point,:)-fitpoints(point,:));
     end
-    LSE
-end
-%% Evaluation des résultats
-% LSE = 0;
-% for point = 1:number_points
-%     LSE = LSE + (norm(interesting_points(point,:)-y1(point)))/norm(interesting_points(point,:));
-% end
-% % l'erreur moyenne par point est de...
-% LSE/number_points
-% immse(interesting_points(:,1), y1)
 
-%%
+    plot(y1,x1,'Color', 'b', 'LineWidth',4) % afficher courbe.
+    hold off;
+
+    % l'erreur par point est de...
+    err = LSE/number_points
+    errors(i)=err;
+    path_harris = strcat('img_harris/', files(num_image).name);
+    saveas(gcf, path_harris);
+end
+
+%% Visualize all key points
 figure(31);
 imshow(I);
 hold on;
